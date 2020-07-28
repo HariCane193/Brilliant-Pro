@@ -6,7 +6,7 @@ main.title('Timer')
 main.geometry('1600x800')
 
 #Background
-b_img = ImageTk.PhotoImage(Image.open('Images/TimerBG.jpg'))
+b_img = ImageTk.PhotoImage(Image.open('TimerBG.jpg'))
 b_l = Label(main,image = b_img)
 b_l.place(x = 0,y = 0)
 
