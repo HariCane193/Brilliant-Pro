@@ -1,5 +1,6 @@
 from tkinter import *
 from PIL import ImageTk,Image
+import os
 main = Tk()
 main.title('Brilliant Pro')
 main.geometry('1200x800')
@@ -25,7 +26,7 @@ def login():
 
 #registration function
 def register():
-    #currently empty to be filled in after creating a database
+    os.system("RegisterPage.py")
     return 
 #button for login
 login1 = Button(main,text = 'LOGIN',command = login).place(x = 550,y = 520)
