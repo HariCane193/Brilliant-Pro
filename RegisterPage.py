@@ -1,16 +1,30 @@
 from tkinter import *
 from PIL import ImageTk,Image
 from tkinter import messagebox
+import mysql.connector as ms
 
 main = Tk()
 main.title('Register')
 main.geometry('600x500')
 
-
 #Background
 b_img = ImageTk.PhotoImage(Image.open('Images/regbg.jpg'))
 b_l = Label(main,image = b_img)
 b_l.place(x = 0,y = 0)
+
+f = open('databaseinfo.txt')
+x = ''
+for i in range(3):
+    x+=f.readline()
+#x now has host,user,password used for logging into the database
+x = x.split()
+
+#connecting into the server
+try:
+    mycon = ms.connect(host = x[0],user = x[1],password = x[2])
+    mycur = mycon.cursor()
+except:
+    messagebox.showerror('Database error','Server connection inactive!')
 
 #Functions
 
@@ -23,6 +37,12 @@ def confirm():
     if res:
         user = Username.get()
         passw = Password.get()
+        mycur.execute('CREATE DATABASE '+user)
+        mycur.execute('Use '+user)
+        mycur.execute("CREATE table password(pass varchar(30))")
+        mycur.execute(f"INSERT INTO password values('{passw}')")
+        mycon.commit()
+        messagebox.showinfo('Confirmation','Successfully Registered')
         main.quit()
     else:
         return
