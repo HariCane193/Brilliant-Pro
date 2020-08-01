@@ -17,8 +17,10 @@ for i in range(3):
     x+=f.readline()
 #x now has host,user,password used for logging into the database
 x = x.split()
-
-
+#print(x)
+mycon = ms.connect(host = x[0],user = x[1],password = x[2])
+mycur = mycon.cursor()
+g = open('usernameinfo.txt','w')
 
 
 
@@ -26,7 +28,6 @@ backgroundImage = ImageTk.PhotoImage(Image.open('Images/login.jpg'))
 #Remember to check how to get file location of image each time as end user we cant input the file location in the previous line
 
 backgroundlabel = Label(main,image = backgroundImage).place(x = 0,y = 0,relwidth = 1,relheight = 1)
-
 
 #Adding the username and password entries
 Username = Entry(main,width = 50)
@@ -46,21 +47,23 @@ def clock():
 def login():
     #connecting into the server
     try:
-        mycon = ms.connect(host = x[0],user = x[1],password = x[2],database = Username.get())
-        mycur = mycon.cursor()
+        u = Username.get()
+        mycur.execute('Use '+u)
         mycur.execute('SELECT * from password')
         (pass1,) = mycur.fetchone()
         if pass1==Password.get():
-            #put inside os function here
-            #checked this works
+            g.write(u)
             main.quit()
+            os.system('timertest.py')
+            #checked this works
         else:
             messagebox.showerror('Error','Invalid Password')
 
     except:
         messagebox.showerror('Database error','Invalid Username/Password!')
+    f.close()
+    g.close()
     
-
 #registration function
 def register():
     os.system("RegisterPage.py")

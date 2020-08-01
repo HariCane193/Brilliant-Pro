@@ -42,6 +42,8 @@ def confirm():
         mycur.execute("CREATE table password(pass varchar(30))")
         mycur.execute(f"INSERT INTO password values('{passw}')")
         mycon.commit()
+        mycur.execute("CREATE table Schedule(task varchar(40),time varchar(10),STATUS char DEFAULT = '0',starttime DATETIME)")
+        mycon.commit()
         messagebox.showinfo('Confirmation','Successfully Registered')
         main.quit()
     else:
