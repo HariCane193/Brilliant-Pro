@@ -82,6 +82,9 @@ if len(tasks)!=0:
 def alter():
     os.system('dtbtask.py')
 
+#insta function
+def inst():
+    os.system('insta.py')
 #clock
 def clock():
     c.config(text = time.strftime('%T'))
@@ -101,5 +104,10 @@ clock()
 #Buttons
 al = Button(main,text = 'Alter Schedule',font = ('Arial Black',25),command = alter)
 al.place(x = 1200,y = 800)
+
+inst_info = Button(main,text = 'Instagram Login Information & Image',font = ('Arial Black',20),command = inst)
+inst_info.place(x = 40,y = 800)
+
+
 
 main.mainloop()
