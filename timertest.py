@@ -7,7 +7,9 @@ import mysql.connector as ms
 
 #username information
 g = open('usernameinfo.txt')
-user = g.readline()
+u = g.readline()
+#print(u)
+g.close()
 #database server connection
 f = open('databaseinfo.txt')
 x = ''
@@ -15,11 +17,14 @@ for i in range(3):
     x+=f.readline()
 #x now has host,user,password used for logging into the database
 x = x.split()
+f.close()
 
-mycon = ms.connect(host = x[0],user = x[1],password = x[2],database = user)
+mycon = ms.connect(host = x[0],user = x[1],password = x[2],database = u)
 mycur = mycon.cursor()
+#mycur.execute("Use "+u)
 mycur.execute("Select * from schedule order by starttime")
 tasks = mycur.fetchall();
+#print(tasks)
 #task,timer,status,datetime
 ts_dtb = []
 tim_dtb = []
@@ -55,7 +60,7 @@ def timer(number):
         upt.config(text = 'At: '+str(date_dtb[tskno+1]))
     except:
         upc.config(text = 'Upcoming Task: '+'All done!')
-        upt.config(text = 'At: '+str(date_dtb[tskno+1]))
+        upt.config(text = 'At: '+"All done!")
     if number==-1:
         f_no+=1
         F_no.config(text = f_no)
@@ -68,7 +73,7 @@ def timer(number):
         return None
     if endT:
         s_no+=1
-        S_no.config(text = s_no)
+        Suc_no.config(text = s_no)
         tskno+=1
         c_task.config(text = 'Current Task: On break')
         #if tskno<len(tim_dtb) and str(date_dtb[tskno]) == dval+' '+cval:
@@ -199,18 +204,17 @@ F_no.place(x = 150, y = 100)
 
 if len(tim_dtb):
     v = ts_dtb[tskno]
+    a = 'On Break'
+    t = str(date_dtb[tskno])
 else:
     v = 'No Pending Tasks'
-
-if len(tim_dtb):
-    a = 'On Break'
-else:
     a = 'No Pending Tasks'
+    t = 'NA'
 
 upc = Label(main,text = 'Upcoming Task: '+v,font = ('Arial Black',16))
 upc.place(x = 1200,y = 400)
 
-upt = Label(main,text = 'At: '+str(date_dtb[tskno]),font = ('Arial Black',16))
+upt = Label(main,text = 'At: '+t,font = ('Arial Black',16))
 upt.place(x = 1200,y = 450)
 
 c_task = Label(main,text = 'Current Task: '+a,font = ('Arial Black',16))
@@ -267,28 +271,36 @@ else:
     sta.pack()
 #Final task time data
 #print(str(date_dtb[-1]))
-value = str(date_dtb[-1]).split()[1]
-#print(value)
+'''
+if (len(tasks)):
+    value = str(date_dtb[-1]).split()[1]
+    #print(value)
 
-value = value.split(':')
-value[0] = str(int(value[0])+1)
-v1 = ':'
-v1 = v1.join(value)
+    value = value.split(':')
+    value[0] = str(int(value[0])+1)
+    v1 = ':'
+    v1 = v1.join(value)
+else:
+    v1 = None
+'''
 #print(v1)
+
 #Clock
 def clock():
     global cval,dval,tskno
     cval = time.strftime('%T')
     c.config(text = cval)
-    c.after(1000,clock)
     if cval == '00:00:00':
         date()
 
-    if len(tim_dtb) and str(date_dtb[tskno]) == dval+' '+ cval:
-        timer(tim_dtb[tskno])
-
-    if len(tim_dtb) and cval == v1:
+    try:
+        if len(tim_dtb) and str(date_dtb[tskno]) == dval+' '+ cval:
+            timer(tim_dtb[tskno])
+    except:
+        pass
+    if tskno==len(tasks):
         os.system('instapost.py')
+    c.after(1000,clock)
         
 c = Label(main,text = '',font = ('Arial Black',20),bg = 'white',fg = 'black')
 c.place(x = 1400, y = 200)

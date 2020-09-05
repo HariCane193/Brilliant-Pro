@@ -15,6 +15,7 @@ f = open('databaseinfo.txt')
 x = ''
 for i in range(3):
     x+=f.readline()
+f.close()
 #x now has host,user,password used for logging into the database
 x = x.split()
 #print(x)
@@ -53,6 +54,7 @@ def login():
         (pass1,) = mycur.fetchone()
         if pass1==Password.get():
             g.write(u)
+            g.close()
             main.quit()
             os.system('timertest.py')
             #checked this works
@@ -61,8 +63,6 @@ def login():
 
     except:
         messagebox.showerror('Database error','Invalid Username/Password!')
-    f.close()
-    g.close()
     
 #registration function
 def register():
