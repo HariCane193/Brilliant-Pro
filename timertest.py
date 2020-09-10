@@ -292,13 +292,15 @@ def clock():
     c.config(text = cval)
     if cval == '00:00:00':
         date()
+        mycur.execute("Delete from schedule")
+        mycon.commit()
 
     try:
         if len(tim_dtb) and str(date_dtb[tskno]) == dval+' '+ cval:
             timer(tim_dtb[tskno])
     except:
         pass
-    if tskno==len(tasks):
+    if tskno==len(tasks) and len(tasks):
         os.system('instapost.py')
     c.after(1000,clock)
         

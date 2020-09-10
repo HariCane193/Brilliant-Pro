@@ -5,7 +5,7 @@ import mysql.connector as ms
 d = open('databaseinfo.txt')
 z = ''
 for i in range(3):
-    z+=f.readline()
+    z+=d.readline()
 #x now has host,user,password used for logging into the database
 z = z.split()
 w = open('usernameinfo.txt')

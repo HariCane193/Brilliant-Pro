@@ -76,8 +76,23 @@ if len(tasks)!=0:
             val = 'DONE'
         Label(t3,text = str(val),font = ('Arial Black',20)).pack()
         Label(t4,text = str(date_dtb[i]),font = ('Arial Black',20)).pack()
-
-
+#Clear
+def clear():
+    try:
+        named_tuple = time.localtime() # get struct_time
+        time_string = time.strftime("%Y-%m-%d %H:%M:%S", named_tuple)
+        mycur.execute(f"Select time from schedule where starttime<'{time_string}'")
+        (tval,) = mycur.fetchone()
+        hour = int(time.strftime("%H",named_tuple))+int(tval[:2])
+        minute = int(time.strftime("%M",named_tuple))+int(tval[3:5])
+        sec  = int(time.strftime("%S",named_tuple))+int(tval[-2:])
+        time_string = time.strftime("%Y-%m-%d", named_tuple)
+        print(tval)
+        mycur.execute(f"Delete from schedule where starttime < '{time_string} {hour}:{minute}:{sec}' and STATUS = '0'")
+        print(time_string)
+        mycon.commit()
+    except:
+        pass
 #Alter function
 def alter():
     os.system('dtbtask.py')
@@ -104,6 +119,9 @@ clock()
 #Buttons
 al = Button(main,text = 'Alter Schedule',font = ('Arial Black',25),command = alter)
 al.place(x = 1200,y = 800)
+
+cl = Button(main,text = 'Clear Schedule',font = ('Arial Black',25),command = clear)
+cl.place(x = 1200,y = 600)
 
 inst_info = Button(main,text = 'Instagram Login Information & Image',font = ('Arial Black',20),command = inst)
 inst_info.place(x = 40,y = 800)
