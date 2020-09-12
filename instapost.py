@@ -16,20 +16,22 @@ mycur.execute("Select count(status) from schedule where status = 'i'")
 (val,) = mycur.fetchone()
 mycur.execute("Select count(task) from schedule")
 (tot,) = mycur.fetchone()
-if val/tot>0.25:
 
-    f = open('instainfo.txt')
-    x = ''
-    for i in range(2):
-        x+=f.readline()
-    #x now has host,user,password used for logging into the database
-    x = x.split()
-    f.close()
 
-    g = open('photoloc.txt')
-    y = g.readline()
+f = open('instainfo.txt')
+x = ''
+for i in range(2):
+    x+=f.readline()
+#x now has host,user,password used for logging into the database
+x = x.split()
+f.close()
 
-    bot = Bot()
+g = open('photoloc.txt')
+y = g.readline()
+bot = Bot()
 
-    bot.login(username = x[0],password = x[1])
+bot.login(username = x[0],password = x[1])
+if tot!=0 and val/tot>0.25:
     bot.upload_photo(y,caption = 'I failed at '+val+' tasks today :(')
+else:
+    bot.upload_photo(y,caption = 'Test')

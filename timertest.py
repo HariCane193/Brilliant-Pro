@@ -104,6 +104,8 @@ endT = False
 
 
 #Functions
+def upload():
+    os.system("instapost.py")
 
 def end():
     global endT
@@ -118,8 +120,11 @@ def update():
 
 
 def moveF(taskno):
+    global sta,r_button,l_button,tsk,tsk_no,tot,ts_dtb
     tsk.config(text = ts_dtb[taskno])
-    mycur.execute(f"select status from schedule where task = '{ts_dtb[taskno]}'")
+    '''
+    print(date_dtb[tskno])
+    mycur.execute(f"select status from schedule where task = '{ts_dtb[taskno]}' and starttime = '{date_dtb[tskno]}'")
     (ss,) = mycur.fetchone()
     if ss == '0':
         val = 'TO DO'
@@ -128,6 +133,7 @@ def moveF(taskno):
     else:
         val = 'Incomplete'
     sta.config(text = val)
+    '''
     if taskno == len(ts_dtb)-1:
         r_button = Button(main,text = '>>',font = ('Courier New',20),state = DISABLED)
 
@@ -142,9 +148,10 @@ def moveF(taskno):
 
 
 def moveB(taskno):
-    
+    global sta,r_button,l_button,tsk,tsk_no,tot,ts_dtb
     tsk.config(text = ts_dtb[taskno])
-    mycur.execute(f"select status from schedule where task = '{ts_dtb[taskno]}'")
+    '''
+    mycur.execute(f"select status from schedule where task = '{ts_dtb[taskno]}' and starttime = '{date_dtb[tskno]}'")
     (ss,) = mycur.fetchone()
     if ss == '0':
         val = 'TO DO'
@@ -153,6 +160,7 @@ def moveB(taskno):
     else:
         val = 'Incomplete'
     sta.config(text = val)
+    '''
 
     if taskno == 0:
         l_button = Button(main,text = '<<',font = ('Courier New',20),state = DISABLED)
@@ -168,6 +176,8 @@ def moveB(taskno):
 
 
 #Buttons
+uplink = Button(main,text = 'UPLOAD',font = ('Arial Black',20),command = upload)
+uplink.place(x = 100,y = 600)
 if not len(tim_dtb):
     End = Button(main,text = 'Finish',font = ('Arial Black',20),state = DISABLED)
     End.place(x = 730,y = 340)
@@ -256,7 +266,7 @@ else:
     
     tsk_no = Label(task_frame,text = 'No tasks left to complete')
     tsk_no.pack()
-
+'''
 if not tot:
     sta = Label(task_frame,text = 'Current Task: None')
     sta.pack()
@@ -269,6 +279,7 @@ else:
         val = 'Incomplete'
     sta = Label(task_frame,text = val)
     sta.pack()
+'''
 #Final task time data
 #print(str(date_dtb[-1]))
 '''

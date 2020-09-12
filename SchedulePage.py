@@ -8,6 +8,7 @@ import time
 main = Tk()
 main.title('Your Schedule')
 main.geometry('1600x1000')
+main.resizable(0,0)
 
 
 #Background
@@ -24,13 +25,13 @@ t1 = LabelFrame(main,text = '',width = 100)
 t1.place(x = 100,y = 200)
 
 t2 = LabelFrame(main,text = '',width = 100)
-t2.place(x = 250,y = 200)
+t2.place(x = 450,y = 200)
 
 t3 = LabelFrame(main,text = '',width = 100)
-t3.place(x = 430,y = 200)
+t3.place(x = 620,y = 200)
 
 t4 = LabelFrame(main,text = '',width = 100)
-t4.place(x = 550,y = 200)
+t4.place(x = 730,y = 200)
 
 #username information
 g = open('usernameinfo.txt')
@@ -81,18 +82,36 @@ def clear():
     try:
         named_tuple = time.localtime() # get struct_time
         time_string = time.strftime("%Y-%m-%d %H:%M:%S", named_tuple)
-        mycur.execute(f"Select time from schedule where starttime<'{time_string}'")
+        mycur.execute(f"Select time from schedule where starttime<'{time_string}' order by starttime desc")
         (tval,) = mycur.fetchone()
         hour = int(time.strftime("%H",named_tuple))+int(tval[:2])
         minute = int(time.strftime("%M",named_tuple))+int(tval[3:5])
         sec  = int(time.strftime("%S",named_tuple))+int(tval[-2:])
+        totaltime = hour*3600+minute*60+sec
+        hour = (totaltime//3600)
+        minute = (totaltime%3600)//60
+        if hour<10:
+            valh = '0'
+        else:
+            valh = ''
+        if minute<10:
+            valm = '0'
+        else:
+            valm = ''
+        if sec<10:
+            vals = '0'
+        else:
+            vals = ''
         time_string = time.strftime("%Y-%m-%d", named_tuple)
-        print(tval)
-        mycur.execute(f"Delete from schedule where starttime < '{time_string} {hour}:{minute}:{sec}' and STATUS = '0'")
-        print(time_string)
-        mycon.commit()
+        if (hour>=24):
+        #print(totaltime,hour,minute,sec)
+            mycur.execute("delete from schedule")
+            mycon.commit()
+        else:
+            mycur.execute(f"Delete from schedule where starttime < '{time_string} {valh}{hour}:{valm}{minute}:{vals}{sec}' and STATUS = '0'")
+            mycon.commit()
     except:
-        pass
+        print('a')
 #Alter function
 def alter():
     os.system('dtbtask.py')
