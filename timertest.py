@@ -193,7 +193,7 @@ else:
 Update = Button(main,text = 'Schedule',font = ('Arial Black',28),command = update)
 Update.place(x = 1350,y = 700)
 
-if not len(tim_dtb):
+if len(tim_dtb)<=1:
     r_button = Button(main,text = '>>',font = ('Courier New',20), state = DISABLED)
     r_button.place(x = 950,y = 550)
 else:
