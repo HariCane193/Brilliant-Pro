@@ -7,7 +7,7 @@ main.title('instagram information')
 
 #Entries
 username = Entry(main,width = 50)
-password = Entry(main,width = 50)
+password = Entry(main,show = '*',width = 50)
 userphoto = Entry(main,width = 34)
 
 username.place(x = 103,y = 60)

@@ -118,6 +118,10 @@ def end():
 def update():
     os.system('SchedulePage.py')
 
+#REFRESH Function
+def ref():
+    main.quit()
+    os.system("timertest.py")
 
 def moveF(taskno):
     global sta,r_button,l_button,tsk,tsk_no,tot,ts_dtb
@@ -201,6 +205,10 @@ l_button = Button(main,text = '<<',font = ('Courier New',20),state = DISABLED)
 l_button.place(x = 570,y = 550)
 
 
+photo = PhotoImage(file = r"Images/REFRESH.jpg")
+
+refresh = Button(main,text = '',image = photo,command = ref)
+refresh.place(x = 1450,y = 300)
 
 
 tskno = 0

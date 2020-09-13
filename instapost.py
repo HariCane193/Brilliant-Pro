@@ -8,6 +8,7 @@ for i in range(3):
     z+=d.readline()
 #x now has host,user,password used for logging into the database
 z = z.split()
+d.close()
 w = open('usernameinfo.txt')
 user = w.readline()
 mycon = ms.connect(host = z[0],user = z[1],password = z[2],database = user)
@@ -16,7 +17,7 @@ mycur.execute("Select count(status) from schedule where status = 'i'")
 (val,) = mycur.fetchone()
 mycur.execute("Select count(task) from schedule")
 (tot,) = mycur.fetchone()
-
+w.close()
 
 f = open('instainfo.txt')
 x = ''
@@ -28,6 +29,7 @@ f.close()
 
 g = open('photoloc.txt')
 y = g.readline()
+g.close()
 bot = Bot()
 
 bot.login(username = x[0],password = x[1])

@@ -77,16 +77,25 @@ if len(tasks)!=0:
             val = 'DONE'
         Label(t3,text = str(val),font = ('Arial Black',20)).pack()
         Label(t4,text = str(date_dtb[i]),font = ('Arial Black',20)).pack()
+
+#REFRESH Function
+def ref():
+    main.quit()
+    os.system("SchedulePage.py")
+
+
 #Clear
 def clear():
+    '''
     try:
         named_tuple = time.localtime() # get struct_time
         time_string = time.strftime("%Y-%m-%d %H:%M:%S", named_tuple)
-        mycur.execute(f"Select time from schedule where starttime<'{time_string}' order by starttime desc")
-        (tval,) = mycur.fetchone()
-        hour = int(time.strftime("%H",named_tuple))+int(tval[:2])
-        minute = int(time.strftime("%M",named_tuple))+int(tval[3:5])
-        sec  = int(time.strftime("%S",named_tuple))+int(tval[-2:])
+        mycur.execute(f"Select starttime,time from schedule where starttime<'{time_string}' order by starttime desc")
+        (start,tval) = mycur.fetchone()
+        time_string = start[:10]
+        hour = int(start[11:13])+int(tval[:2])
+        minute = int(start[14:16])+int(tval[3:5])
+        sec  = int(start[17:])+int(tval[-2:])
         totaltime = hour*3600+minute*60+sec
         hour = (totaltime//3600)
         minute = (totaltime%3600)//60
@@ -102,7 +111,6 @@ def clear():
             vals = '0'
         else:
             vals = ''
-        time_string = time.strftime("%Y-%m-%d", named_tuple)
         if (hour>=24):
         #print(totaltime,hour,minute,sec)
             mycur.execute("delete from schedule")
@@ -112,6 +120,10 @@ def clear():
             mycon.commit()
     except:
         print('a')
+    '''
+    mycur.execute("delete from schedule")
+    mycon.commit()
+    
 #Alter function
 def alter():
     os.system('dtbtask.py')
@@ -145,6 +157,9 @@ cl.place(x = 1200,y = 600)
 inst_info = Button(main,text = 'Instagram Login Information & Image',font = ('Arial Black',20),command = inst)
 inst_info.place(x = 40,y = 800)
 
+photo = PhotoImage(file = r"Images/REFRESH.jpg")
 
+refresh = Button(main,text = '',image = photo,command = ref)
+refresh.place(x = 1200,y = 10)
 
 main.mainloop()

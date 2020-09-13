@@ -33,7 +33,7 @@ backgroundlabel = Label(main,image = backgroundImage).place(x = 0,y = 0,relwidth
 #Adding the username and password entries
 Username = Entry(main,width = 50)
 Username.insert(0,'Username')
-Password = Entry(main,width = 50)
+Password = Entry(main,show = '*',width = 50)
 Password.insert(0,'Password')
 Username.place(x = 450,y = 355)
 Password.place(x = 450,y = 470)

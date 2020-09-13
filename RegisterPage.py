@@ -53,11 +53,11 @@ def confirm():
 #Entries
 
 Username = Entry(main,width = 50)
-Password = Entry(main,width = 50)
+Password = Entry(main,show = '*',width = 50)
 Username.place(x = 170,y = 200)
 Password.place(x = 170,y = 230)
 
-C_pass = Entry(main,width = 50)
+C_pass = Entry(main,show = '*',width = 50)
 C_pass.place(x = 170,y = 260)
 
 Username.insert(0,'Username')
