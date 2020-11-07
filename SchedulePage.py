@@ -81,7 +81,7 @@ if len(tasks)!=0:
 #REFRESH Function
 def ref():
     main.quit()
-    os.system("SchedulePage.py")
+    os.system("python SchedulePage.py")
 
 
 #Clear
@@ -126,11 +126,11 @@ def clear():
     
 #Alter function
 def alter():
-    os.system('dtbtask.py')
+    os.system('python dtbtask.py')
 
 #insta function
 def inst():
-    os.system('insta.py')
+    os.system('python insta.py')
 #clock
 def clock():
     c.config(text = time.strftime('%T'))

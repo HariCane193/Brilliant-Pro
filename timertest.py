@@ -21,10 +21,8 @@ f.close()
 
 mycon = ms.connect(host = x[0],user = x[1],password = x[2],database = u)
 mycur = mycon.cursor()
-#mycur.execute("Use "+u)
 mycur.execute("Select * from schedule order by starttime")
 tasks = mycur.fetchall();
-#print(tasks)
 #task,timer,status,datetime
 ts_dtb = []
 tim_dtb = []
@@ -68,18 +66,13 @@ def timer(number):
         mycon.commit()
         tskno+=1
         c_task.config(text = 'Current Task: Completing Backlog')
-        #if len(tim_dtb) and str(date_dtb[tskno]) == dval+' '+ cval:
-            #timer(tim_dtb[tskno])
         return None
     if endT:
         s_no+=1
         Suc_no.config(text = s_no)
         tskno+=1
         c_task.config(text = 'Current Task: On break')
-        #if tskno<len(tim_dtb) and str(date_dtb[tskno]) == dval+' '+cval:
         endT = False
-            #timer(tim_dtb[tskno])
-            
         return None
     hour = number//3600
     minute = (number%3600)//60
@@ -105,7 +98,7 @@ endT = False
 
 #Functions
 def upload():
-    os.system("instapost.py")
+    os.system("python instapost.py")
 
 def end():
     global endT
@@ -116,28 +109,16 @@ def end():
     success.place(x = 630,y = 430)
 
 def update():
-    os.system('SchedulePage.py')
+    os.system('python SchedulePage.py')
 
 #REFRESH Function
 def ref():
     main.quit()
-    os.system("timertest.py")
+    os.system("python timertest.py")
 
 def moveF(taskno):
     global sta,r_button,l_button,tsk,tsk_no,tot,ts_dtb
     tsk.config(text = ts_dtb[taskno])
-    '''
-    print(date_dtb[tskno])
-    mycur.execute(f"select status from schedule where task = '{ts_dtb[taskno]}' and starttime = '{date_dtb[tskno]}'")
-    (ss,) = mycur.fetchone()
-    if ss == '0':
-        val = 'TO DO'
-    elif ss == '1':
-        val = 'DONE'
-    else:
-        val = 'Incomplete'
-    sta.config(text = val)
-    '''
     if taskno == len(ts_dtb)-1:
         r_button = Button(main,text = '>>',font = ('Courier New',20),state = DISABLED)
 
@@ -154,17 +135,6 @@ def moveF(taskno):
 def moveB(taskno):
     global sta,r_button,l_button,tsk,tsk_no,tot,ts_dtb
     tsk.config(text = ts_dtb[taskno])
-    '''
-    mycur.execute(f"select status from schedule where task = '{ts_dtb[taskno]}' and starttime = '{date_dtb[tskno]}'")
-    (ss,) = mycur.fetchone()
-    if ss == '0':
-        val = 'TO DO'
-    elif ss == '1':
-        val = 'DONE'
-    else:
-        val = 'Incomplete'
-    sta.config(text = val)
-    '''
 
     if taskno == 0:
         l_button = Button(main,text = '<<',font = ('Courier New',20),state = DISABLED)
@@ -180,7 +150,7 @@ def moveB(taskno):
 
 
 #Buttons
-uplink = Button(main,text = 'UPLOAD',font = ('Arial Black',20),command = upload)
+uplink = Button(main,text = 'UPLOAD',font = ('Arial Black',20),command = upload,state = DISABLED)
 uplink.place(x = 100,y = 600)
 if not len(tim_dtb):
     End = Button(main,text = 'Finish',font = ('Arial Black',20),state = DISABLED)
@@ -274,35 +244,6 @@ else:
     
     tsk_no = Label(task_frame,text = 'No tasks left to complete')
     tsk_no.pack()
-'''
-if not tot:
-    sta = Label(task_frame,text = 'Current Task: None')
-    sta.pack()
-else:
-    if st[0] == '0':
-        val = 'TO DO'
-    elif st[0] == '1':
-        val = 'DONE'
-    else:
-        val = 'Incomplete'
-    sta = Label(task_frame,text = val)
-    sta.pack()
-'''
-#Final task time data
-#print(str(date_dtb[-1]))
-'''
-if (len(tasks)):
-    value = str(date_dtb[-1]).split()[1]
-    #print(value)
-
-    value = value.split(':')
-    value[0] = str(int(value[0])+1)
-    v1 = ':'
-    v1 = v1.join(value)
-else:
-    v1 = None
-'''
-#print(v1)
 
 #Clock
 def clock():
@@ -320,7 +261,7 @@ def clock():
     except:
         pass
     if tskno==len(tasks) and len(tasks):
-        os.system('instapost.py')
+        os.system('python instapost.py')
     c.after(1000,clock)
         
 c = Label(main,text = '',font = ('Arial Black',20),bg = 'white',fg = 'black')
@@ -337,6 +278,4 @@ date()
 clock()
 
 #Function calls
-#print(date_dtb[0])
-#print('2020-08-02 14:54:00' == str(date_dtb[0]))
 main.mainloop()

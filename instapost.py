@@ -33,7 +33,7 @@ g.close()
 bot = Bot()
 
 bot.login(username = x[0],password = x[1])
-bot.upload_photo(y,caption = 'Test')
+bot.upload_photo(y,caption = 'Test on 14-09-2020')
 if (False):
     if tot!=0 and val/tot>0.25:
         bot.upload_photo(y,caption = 'I failed at '+val+' tasks today :(')
