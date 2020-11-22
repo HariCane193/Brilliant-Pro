@@ -59,7 +59,7 @@ Ssec['values'] = (('00','01','02','03','04','05','06','07','08','09')+tuple(str(
 Ssec.current('00')
 Ssec.place(x = 230,y = 50)
 
-starttime = str(Syear.get())+'-'+str(Smonth.get())+'-'+str(Sday.get())+' '+str(Shr)+':'+str(Smin)+':'+str(Ssec)
+
 #Entries
 task = Entry(main,width = 40)
 task.place(x = 110,y = 20)
@@ -85,6 +85,7 @@ quote.place(x = 10,y = 240)
 
 #Functions
 def confirm():
+    starttime = str(Syear.get())+'-'+str(Smonth.get())+'-'+str(Sday.get())+' '+str(Shr.get())+':'+str(Smin.get())+':'+str(Ssec.get())
     mycur.execute(f"INSERT into schedule(task,time,starttime) values('{task.get()}','{time.get()}','{starttime}')")
     mycon.commit()
     task.insert(0,'')

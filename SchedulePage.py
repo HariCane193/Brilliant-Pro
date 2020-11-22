@@ -11,8 +11,13 @@ main.geometry('1600x1000')
 main.resizable(0,0)
 
 
+#BG
+f = open('settings.txt')
+f.readline()
+BG = f.readline()[:-1]
+f.close()
 #Background
-bg_img = ImageTk.PhotoImage(Image.open('Images/ScheduleBG.jpg'))
+bg_img = ImageTk.PhotoImage(Image.open(BG))
 bg_l = Label(main,image = bg_img)
 bg_l.place(x = 0,y = 0)
 
@@ -46,7 +51,8 @@ x = x.split()
 
 mycon = ms.connect(host = x[0],user = x[1],password = x[2],database = user)
 mycur = mycon.cursor()
-mycur.execute("Select * from schedule order by starttime")
+dval = time.strftime('%Y')+'-'+time.strftime('%m')+'-'+time.strftime('%d')
+mycur.execute(f"Select * from schedule where starttime > '{dval+' '+time.strftime('%T')}' order by starttime")
 tasks = mycur.fetchall();
 #task,timer,status,datetime
 ts_dtb = []
@@ -86,44 +92,14 @@ def ref():
 
 #Clear
 def clear():
-    '''
-    try:
-        named_tuple = time.localtime() # get struct_time
-        time_string = time.strftime("%Y-%m-%d %H:%M:%S", named_tuple)
-        mycur.execute(f"Select starttime,time from schedule where starttime<'{time_string}' order by starttime desc")
-        (start,tval) = mycur.fetchone()
-        time_string = start[:10]
-        hour = int(start[11:13])+int(tval[:2])
-        minute = int(start[14:16])+int(tval[3:5])
-        sec  = int(start[17:])+int(tval[-2:])
-        totaltime = hour*3600+minute*60+sec
-        hour = (totaltime//3600)
-        minute = (totaltime%3600)//60
-        if hour<10:
-            valh = '0'
-        else:
-            valh = ''
-        if minute<10:
-            valm = '0'
-        else:
-            valm = ''
-        if sec<10:
-            vals = '0'
-        else:
-            vals = ''
-        if (hour>=24):
-        #print(totaltime,hour,minute,sec)
-            mycur.execute("delete from schedule")
-            mycon.commit()
-        else:
-            mycur.execute(f"Delete from schedule where starttime < '{time_string} {valh}{hour}:{valm}{minute}:{vals}{sec}' and STATUS = '0'")
-            mycon.commit()
-    except:
-        print('a')
-    '''
-    mycur.execute("delete from schedule")
+    dval1 = time.strftime('%Y')+'-'+time.strftime('%m')+'-'+time.strftime('%d')
+    mycur.execute(f"delete from schedule where starttime <'{dval1+' 00:00:00'}'")
     mycon.commit()
     
+def mclear():
+    dval1 = time.strftime('%Y')+'-'+time.strftime('%m')+'-'+time.strftime('%d')
+    mycur.execute(f"delete from schedule where starttime >'{dval1+' 23:59:59'}'")
+    mycon.commit()
 #Alter function
 def alter():
     os.system('python dtbtask.py')
@@ -131,11 +107,13 @@ def alter():
 #insta function
 def inst():
     os.system('python insta.py')
+#settings
+def setrun():
+    os.system('python settings.py')
 #clock
 def clock():
     c.config(text = time.strftime('%T'))
     c.after(1000,clock)
-
 
 
 #heading
@@ -154,12 +132,18 @@ al.place(x = 1200,y = 800)
 cl = Button(main,text = 'Clear Schedule',font = ('Arial Black',25),command = clear)
 cl.place(x = 1200,y = 600)
 
-inst_info = Button(main,text = 'Instagram Login Information & Image',font = ('Arial Black',20),command = inst)
-inst_info.place(x = 40,y = 800)
+mcl = Button(main,text = 'Manual Clear',font = ('Arial Black',25),command = mclear)
+mcl.place(x = 1200,y = 500)
+inst_info = Button(main,text = 'Instagram Login Info & Image',font = ('Arial Black',20),command = inst)
+inst_info.place(x = 1100,y = 400)
 
-photo = PhotoImage(file = r"Images/REFRESH.jpg")
+refr = PhotoImage(file = r"Images/REFRESH.jpg")
 
-refresh = Button(main,text = '',image = photo,command = ref)
+refresh = Button(main,text = '',image = refr,command = ref)
 refresh.place(x = 1200,y = 10)
+
+sett = ImageTk.PhotoImage(Image.open("Images/settingsimg.jpg"))
+settings = Button(main,text = '',image = sett,command = setrun)
+settings.place(x = 1200,y = 120)
 
 main.mainloop()

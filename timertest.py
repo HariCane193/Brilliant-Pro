@@ -3,6 +3,7 @@ from PIL import ImageTk,Image
 import os
 import time
 import mysql.connector as ms
+import matplotlib.pyplot as plt
 
 
 #username information
@@ -21,7 +22,8 @@ f.close()
 
 mycon = ms.connect(host = x[0],user = x[1],password = x[2],database = u)
 mycur = mycon.cursor()
-mycur.execute("Select * from schedule order by starttime")
+dval1 = time.strftime('%Y')+'-'+time.strftime('%m')+'-'+time.strftime('%d')
+mycur.execute(f"Select * from schedule where starttime > '{dval1+' '+time.strftime('%T')}' order by starttime")
 tasks = mycur.fetchall();
 #task,timer,status,datetime
 ts_dtb = []
@@ -43,8 +45,13 @@ main = Tk()
 main.title('Timer')
 main.geometry('1600x800')
 
+#BG
+f = open('settings.txt')
+BG = f.readline()[:-1]
+f.close()
+
 #Background
-b_img = ImageTk.PhotoImage(Image.open('Images/TimerBG.jpg'))
+b_img = ImageTk.PhotoImage(Image.open(BG))
 b_l = Label(main,image = b_img)
 b_l.place(x = 0,y = 0)
 
@@ -148,8 +155,34 @@ def moveB(taskno):
     l_button.place(x = 570,y = 550)
     tsk_no.config(text = 'Task '+str(taskno+1)+' of '+str(tot))
 
-
+def setrun():
+    os.system('python settings.py')
+def graph():
+    mycur.execute("Select * from grapheff order by DATE LIMIT 10")
+    values = mycur.fetchall()
+    valuesx,valuesy = [],[]
+    for i,j in values:
+        valuesx.append(str(i))
+        valuesy.append(j)
+    plt.ylabel('Efficiency * Successes')
+    plt.xlabel('Date')
+    plt.plot(valuesx,valuesy)
+    plt.show()
+def ue():
+    mycur.execute(f"Select count(*) from schedule where starttime>'{dval+' 00:00:00'}' and starttime<'{dval+' 23:59:59'}' and status = '1'")
+    (suc123,) = mycur.fetchone()
+    mycur.execute(f"Select count(*) from schedule where starttime>'{dval+' 00:00:00'}' and starttime<'{dval+' 23:59:59'}'")
+    (tot123,) = mycur.fetchone()
+    if not (tot123):
+        tot123 = 1
+    mycur.execute(f"Insert into grapheff values('{dval}',{suc123*suc123/tot123})")
+    mycon.commit()
+    
 #Buttons
+upeff = Button(main,text = 'Upload Efficiency',font = ('Arial Black',20),command = ue,state = DISABLED)
+upeff.place(x = 100,y = 500)
+upgraph = Button(main,text = 'Efficiency Graph',font = ('Arial Black',20),command = graph)
+upgraph.place(x = 100,y = 680)
 uplink = Button(main,text = 'UPLOAD',font = ('Arial Black',20),command = upload,state = DISABLED)
 uplink.place(x = 100,y = 600)
 if not len(tim_dtb):
@@ -178,8 +211,11 @@ l_button.place(x = 570,y = 550)
 photo = PhotoImage(file = r"Images/REFRESH.jpg")
 
 refresh = Button(main,text = '',image = photo,command = ref)
-refresh.place(x = 1450,y = 300)
+refresh.place(x = 1450,y = 320)
 
+sett = ImageTk.PhotoImage(Image.open("Images/settingsimg.jpg"))
+settings = Button(main,text = '',image = sett,command = setrun)
+settings.place(x = 1260,y = 320)
 
 tskno = 0
 #Labels
@@ -200,10 +236,10 @@ else:
     t = 'NA'
 
 upc = Label(main,text = 'Upcoming Task: '+v,font = ('Arial Black',16))
-upc.place(x = 1200,y = 400)
+upc.place(x = 1190,y = 500)
 
 upt = Label(main,text = 'At: '+t,font = ('Arial Black',16))
-upt.place(x = 1200,y = 450)
+upt.place(x = 1190,y = 550)
 
 c_task = Label(main,text = 'Current Task: '+a,font = ('Arial Black',16))
 c_task.place(x = 600,y = 140)
@@ -262,6 +298,7 @@ def clock():
         pass
     if tskno==len(tasks) and len(tasks):
         os.system('python instapost.py')
+        ue()
     c.after(1000,clock)
         
 c = Label(main,text = '',font = ('Arial Black',20),bg = 'white',fg = 'black')
@@ -272,6 +309,8 @@ def date():
     global dval
     dval = time.strftime('%Y')+'-'+time.strftime('%m')+'-'+time.strftime('%d')
     d.config(text = dval)
+    
+
 d = Label(main,text = '',font = ('Arial Black',20),bg = 'white',fg = 'black')
 d.place(x = 1400,y = 250)
 date()

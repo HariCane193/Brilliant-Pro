@@ -56,7 +56,7 @@ def login():
             g.write(u)
             g.close()
             main.quit()
-            os.system('timertest.py')
+            os.system('python timertest.py')
             #checked this works
         else:
             messagebox.showerror('Error','Invalid Password')
@@ -66,7 +66,7 @@ def login():
     
 #registration function
 def register():
-    os.system("RegisterPage.py")
+    os.system("python RegisterPage.py")
     return 
 #button for login
 login1 = Button(main,text = 'LOGIN',command = login).place(x = 550,y = 520)

@@ -1,5 +1,7 @@
 from instabot import Bot
 import mysql.connector as ms
+import time
+import os
 
 
 d = open('databaseinfo.txt')
@@ -31,11 +33,14 @@ g = open('photoloc.txt')
 y = g.readline()
 g.close()
 bot = Bot()
+f = open('settings.txt')
+eff = int(list(f.readlines()[-1].split())[0])/100
+f.close()
 
+dval1 = time.strftime('%Y')+'-'+time.strftime('%m')+'-'+time.strftime('%d')
 bot.login(username = x[0],password = x[1])
-bot.upload_photo(y,caption = 'Test on 14-09-2020')
-if (False):
-    if tot!=0 and val/tot>0.25:
-        bot.upload_photo(y,caption = 'I failed at '+val+' tasks today :(')
-    else:
-        bot.upload_photo(y,caption = 'Test')
+if (True):
+    bot.upload_photo(y,caption = f'Test on 23-11-2020')
+elif tot!=0 and val/tot<eff:
+    bot.upload_photo(y,caption = f'Failure on {dval1}')
+os.rename(f'{y}',f'{y[:-10]}')
