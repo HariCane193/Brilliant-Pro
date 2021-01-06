@@ -55,7 +55,10 @@ def login():
         if pass1==Password.get():
             g.write(u)
             g.close()
-            main.quit()
+            we = open('back.txt','w')
+            we.write('timertest.py')
+            we.close()
+            main.destroy()
             os.system('python timertest.py')
             #checked this works
         else:

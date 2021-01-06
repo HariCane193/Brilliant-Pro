@@ -2,8 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
 import mysql.connector as ms
-
-
+import time as tt
 
 f = open('databaseinfo.txt')
 x = ''
@@ -21,42 +20,55 @@ mycur = mycon.cursor()
 main = Tk()
 main.geometry('400x300')
 
+year = int(tt.strftime('%Y'))
+month = int(tt.strftime('%m'))
+day = int(tt.strftime('%d'))
+
 #combobox
 stayear = StringVar()
 Syear = ttk.Combobox(main, width = 4, textvariable = stayear, font = ('Courier New',8)) 
-Syear['values'] = (tuple(str(x) for x in range(2020,2080)))
+Syear['values'] = (tuple(str(x) for x in range(year,2080)))
 Syear.current('00')
 Syear.place(x = 258,y = 83)
 
+t = tt.strftime('%T')
 stamonth = StringVar()
 Smonth = ttk.Combobox(main, width = 2, textvariable = stamonth, font = ('Courier New',8)) 
 Smonth['values'] = ('01','02','03','04','05','06','07','08','09','10','11','12')
-Smonth.current('00')
+Smonth.current(month-1)
 Smonth.place(x = 180,y = 83)
+
+
 
 staday = StringVar()
 Sday = ttk.Combobox(main, width = 2, textvariable = staday, font = ('Courier New',8)) 
 Sday['values'] = (('01','02','03','04','05','06','07','08','09')+tuple(str(x) for x in range(10,32)))
-Sday.current('00')
+Sday.current(day-1)
 Sday.place(x = 110,y = 83)
+
+
+cval = tt.strftime('%T')
+hours = int(cval[:2])
+mins = int(cval[3:5])
+seconds = int(cval[6:8]) 
 
 stahr = StringVar()
 Shr = ttk.Combobox(main, width = 2, textvariable = stahr, font = ('Courier New',8)) 
 Shr['values'] = (('00','01','02','03','04','05','06','07','08','09')+tuple(str(x) for x in range(10,24)))
-Shr.current('00')
+Shr.current(hours-1)
 Shr.place(x = 110,y = 50)
 
 stamin = StringVar()
 Smin = ttk.Combobox(main, width = 2, textvariable = stamin, font = ('Courier New',8)) 
 Smin['values'] = (('00','01','02','03','04','05','06','07','08','09')+tuple(str(x) for x in range(10,60)))
-Smin.current('00')
+Smin.current(mins-1)
 Smin.place(x = 170,y = 50)
 
 
 stasec = StringVar()
 Ssec = ttk.Combobox(main, width = 2, textvariable = stasec, font = ('Courier New',8)) 
 Ssec['values'] = (('00','01','02','03','04','05','06','07','08','09')+tuple(str(x) for x in range(10,60)))
-Ssec.current('00')
+Ssec.current(seconds-1)
 Ssec.place(x = 230,y = 50)
 
 
@@ -84,12 +96,32 @@ quote.place(x = 10,y = 240)
 
 
 #Functions
+def convtime_to_sec(t):
+    return int(t[:2])*3600+int(t[3:5])*60+int(t[6:]) 
 def confirm():
+    f = open('settings.txt')
+    l = f.readlines()
+    start = l[2][:-1]
+    start = convtime_to_sec(start)
+    end = l[3][:-1]
+    end = convtime_to_sec(end)
+    if (end<start):
+        end+=24*3600
+    tsk = int(l[4][:-1])
+    dval = tt.strftime('%Y')+'-'+tt.strftime('%m')+'-'+tt.strftime('%d')
+    mycur.execute(f"Select count(*) from schedule where starttime > '{dval+' '+tt.strftime('%T')}' order by starttime")
+    (tskth,) = mycur.fetchone()
+    f.close()
     starttime = str(Syear.get())+'-'+str(Smonth.get())+'-'+str(Sday.get())+' '+str(Shr.get())+':'+str(Smin.get())+':'+str(Ssec.get())
-    mycur.execute(f"INSERT into schedule(task,time,starttime) values('{task.get()}','{time.get()}','{starttime}')")
-    mycon.commit()
-    task.insert(0,'')
-    time.insert(0,'')
+    stcheck = str(Shr.get())+':'+str(Smin.get())+':'+str(Ssec.get())
+    stcheck = convtime_to_sec(stcheck)
+    if  (stcheck>=start and stcheck<=end and tsk>tskth):
+        mycur.execute(f"INSERT into schedule(task,time,starttime) values('{task.get()}','{time.get()}','{starttime}')")
+        mycon.commit()
+        task.insert(0,'')
+        time.insert(0,'')
+    else:
+        messagebox.showwarning(title = 'Error',message = 'Fail to meet User Requirements')
     
 def exit():
     main.quit()

@@ -44,6 +44,7 @@ for i in range(len(tim_dtb)):
 main = Tk()
 main.title('Timer')
 main.geometry('1600x800')
+main.resizable(0,0)
 
 #BG
 f = open('settings.txt')
@@ -104,7 +105,17 @@ endT = False
 
 
 #Functions
+def goback():
+    we = open('back.txt','r')
+    a = we.read()
+    we.close()
+    we = open('back.txt','w')
+    we.write('timertest.py')
+    we.close()
+    main.destroy()
+    os.system(f"python {a}")
 def upload():
+
     os.system("python instapost.py")
 
 def end():
@@ -116,11 +127,16 @@ def end():
     success.place(x = 630,y = 430)
 
 def update():
+
+    we = open('back.txt','w')
+    we.write('timertest.py')
+    we.close()
+    main.destroy()
     os.system('python SchedulePage.py')
 
 #REFRESH Function
 def ref():
-    main.quit()
+    main.destroy()
     os.system("python timertest.py")
 
 def moveF(taskno):
@@ -157,9 +173,11 @@ def moveB(taskno):
 
 def setrun():
     os.system('python settings.py')
+
 def graph():
-    mycur.execute("Select * from grapheff order by DATE LIMIT 10")
+    mycur.execute("Select * from grapheff order by DATE desc LIMIT 10")
     values = mycur.fetchall()
+    values = values[::-1]
     valuesx,valuesy = [],[]
     for i,j in values:
         valuesx.append(str(i))
@@ -179,11 +197,11 @@ def ue():
     mycon.commit()
     
 #Buttons
-upeff = Button(main,text = 'Upload Efficiency',font = ('Arial Black',20),command = ue,state = DISABLED)
+upeff = Button(main,text = 'Upload Efficiency',font = ('Arial Black',20),command = ue)
 upeff.place(x = 100,y = 500)
 upgraph = Button(main,text = 'Efficiency Graph',font = ('Arial Black',20),command = graph)
 upgraph.place(x = 100,y = 680)
-uplink = Button(main,text = 'UPLOAD',font = ('Arial Black',20),command = upload,state = DISABLED)
+uplink = Button(main,text = 'UPLOAD',font = ('Arial Black',20),command = upload)
 uplink.place(x = 100,y = 600)
 if not len(tim_dtb):
     End = Button(main,text = 'Finish',font = ('Arial Black',20),state = DISABLED)
@@ -217,6 +235,9 @@ sett = ImageTk.PhotoImage(Image.open("Images/settingsimg.jpg"))
 settings = Button(main,text = '',image = sett,command = setrun)
 settings.place(x = 1260,y = 320)
 
+backarrow = ImageTk.PhotoImage(Image.open("Images/backarrow.jpg"))
+back = Button(main,text = '',image = backarrow,command = goback).place(x = 20,y = 20)
+
 tskno = 0
 #Labels
 s_no = 0
@@ -224,7 +245,7 @@ f_no = 0
 Suc_no = Label(main,text = s_no,font = ('Arial Black',36),bg = 'black',fg = 'green')
 F_no = Label(main,text = f_no,font = ('Arial Black',36),bg = 'black',fg = 'red')
 Suc_no.place(x = 1350,y = 100)
-F_no.place(x = 150, y = 100)
+F_no.place(x = 250, y = 100)
 
 if len(tim_dtb):
     v = ts_dtb[tskno]
@@ -248,7 +269,7 @@ Tasks = Label(main,text = 'Tasks',font = ('Arial Black', 30))
 Tasks.place(x = 725,y = 480)
 
 Fails_T = Label(main,text = 'Fails Today',font = ('Arial Black',30))
-Fails_T.place(x = 50,y = 25)
+Fails_T.place(x = 150,y = 25)
 
 Success_S = Label(main,text = 'Success Streak',font = ('Arial Black',30))
 Success_S.place(x = 1200 ,y = 25)

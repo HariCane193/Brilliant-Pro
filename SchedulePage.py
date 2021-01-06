@@ -52,7 +52,8 @@ x = x.split()
 mycon = ms.connect(host = x[0],user = x[1],password = x[2],database = user)
 mycur = mycon.cursor()
 dval = time.strftime('%Y')+'-'+time.strftime('%m')+'-'+time.strftime('%d')
-mycur.execute(f"Select * from schedule where starttime > '{dval+' '+time.strftime('%T')}' order by starttime")
+#mycur.execute(f"Select * from schedule where starttime > '{dval+' '+time.strftime('%T')}' order by starttime")
+mycur.execute(f"Select * from schedule where starttime >= '{dval} + 00:00:00' and starttime <= '{dval} + 23:59:59' order by starttime")
 tasks = mycur.fetchall();
 #task,timer,status,datetime
 ts_dtb = []
@@ -86,15 +87,17 @@ if len(tasks)!=0:
 
 #REFRESH Function
 def ref():
-    main.quit()
+    main.destroy()
     os.system("python SchedulePage.py")
 
 
 #Clear
+'''
 def clear():
     dval1 = time.strftime('%Y')+'-'+time.strftime('%m')+'-'+time.strftime('%d')
     mycur.execute(f"delete from schedule where starttime <'{dval1+' 00:00:00'}'")
     mycon.commit()
+'''
     
 def mclear():
     dval1 = time.strftime('%Y')+'-'+time.strftime('%m')+'-'+time.strftime('%d')
@@ -115,10 +118,21 @@ def clock():
     c.config(text = time.strftime('%T'))
     c.after(1000,clock)
 
+def goback():
+    we = open('back.txt','r')
+    a = we.read()
+    we.close()
+    we = open('back.txt','w')
+    we.write('SchedulePage.py')
+    we.close()
+    main.destroy()
+    os.system(f"python {a}")
+
+
 
 #heading
 S = Label(main,text = 'Upcoming Tasks',font = ('Arial Black',48),fg = 'white',bg = 'black')
-S.place(x = 10, y= 10)
+S.place(x = 150, y= 10)
 
 #Labels
 c = Label(main,text = '',font = ('Arial Black',20),bg = 'white',fg = 'black')
@@ -126,14 +140,17 @@ c.place(x = 1400, y = 200)
 clock()
 
 #Buttons
+backarrow = ImageTk.PhotoImage(Image.open("Images/backarrow.jpg"))
+back = Button(main,text = '',image = backarrow,command = goback).place(x = 20,y = 20)
+
 al = Button(main,text = 'Alter Schedule',font = ('Arial Black',25),command = alter)
 al.place(x = 1200,y = 800)
 
-cl = Button(main,text = 'Clear Schedule',font = ('Arial Black',25),command = clear)
-cl.place(x = 1200,y = 600)
+#cl = Button(main,text = 'Clear Schedule',font = ('Arial Black',25),command = clear)
+#cl.place(x = 1200,y = 600)
 
 mcl = Button(main,text = 'Manual Clear',font = ('Arial Black',25),command = mclear)
-mcl.place(x = 1200,y = 500)
+mcl.place(x = 1200,y = 700)
 inst_info = Button(main,text = 'Instagram Login Info & Image',font = ('Arial Black',20),command = inst)
 inst_info.place(x = 1100,y = 400)
 
