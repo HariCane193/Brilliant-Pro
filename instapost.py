@@ -1,6 +1,7 @@
 from instabot import Bot
 import mysql.connector as ms
 import time
+from tkinter import messagebox
 import os
 
 
@@ -22,24 +23,28 @@ mycur.execute(f"Select count(task) from schedule where starttime>'{dval1+str(' 0
 (tot,) = mycur.fetchone()
 w.close()
 
-f = open('instainfo.txt')
-x = ''
-for i in range(2):
-    x+=f.readline()
-#x now has host,user,password used for logging into the database
-x = x.split()
-f.close()
+try:
+    f = open('instainfo.txt')
+    x = ''
+    for i in range(2):
+        x+=f.readline()
+    #x now has host,user,password used for logging into the database
+    x = x.split()
+    f.close()
 
-g = open('photoloc.txt')
-y = g.readline()
-g.close()
-bot = Bot()
-f = open('settings.txt')
-eff = int(list(f.readlines()[-1].split())[0])/100
-f.close()
+    g = open('photoloc.txt')
+    y = g.readline()
+    g.close()
+    bot = Bot()
+    f = open('settings.txt')
+    eff = int(list(f.readlines()[-1].split())[0])/100
+    f.close()
 
-dval1 = time.strftime('%Y')+'-'+time.strftime('%m')+'-'+time.strftime('%d')
-bot.login(username = x[0],password = x[1])
-if tot!=0 and (val/tot)<eff:
-    bot.upload_photo(y,caption = f'Failure on {dval1}')
-    os.rename(f"{y+str('.REMOVE_ME')}",f"{y}")
+    dval1 = time.strftime('%Y')+'-'+time.strftime('%m')+'-'+time.strftime('%d')
+    bot.login(username = x[0],password = x[1])
+    if tot!=0 and (val/tot)<eff:
+        bot.upload_photo(y,caption = f'Failure on {dval1}')
+        os.rename(f"{y+str('.REMOVE_ME')}",f"{y}")
+except:
+    messagebox.showerror('Error','Instagram Setup Incomplete')
+    
