@@ -324,7 +324,7 @@ def clock():
     except:
         pass
     if tskno==len(tasks) and len(tasks) and tdupload == 0:
-        os.system('pytho:tn instapost.py')
+        os.system('python instapost.py')
         tdupload = 1
         ue()
     c.after(1000,clock)
