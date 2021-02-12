@@ -70,10 +70,12 @@ def timer(number):
     if number==-1:
         f_no+=1
         F_no.config(text = f_no)
-        mycur.execute(f"UPDATE schedule set status = 'i' where task = '{ts_dtb[tskno]}'")
+        mycur.execute(f"UPDATE schedule set status = 'i' where task = '{ts_dtb[tskno]}' and starttime = '{str(date_dtb[tskno])}'")
         mycon.commit()
         tskno+=1
         c_task.config(text = 'Current Task: Completing Backlog')
+        End = Button(main,text = 'Finish',font = ('Arial Black',20),command = end)
+        End.place(x = 730,y = 340)
         return None
     if endT:
         s_no+=1
@@ -81,6 +83,9 @@ def timer(number):
         tskno+=1
         c_task.config(text = 'Current Task: On break')
         endT = False
+            
+        End = Button(main,text = 'Finish',font = ('Arial Black',20),command = end)
+        End.place(x = 730,y = 340)
         return None
     hour = number//3600
     minute = (number%3600)//60
@@ -122,7 +127,7 @@ def end():
     global endT
     endT = True
     success = Label(main,text = 'Nice! Continue Working!',font = ('Courier New',20))
-    mycur.execute(f"UPDATE schedule set status = '1' where task = '{ts_dtb[tskno]}'")
+    mycur.execute(f"UPDATE schedule set status = '1' where task = '{ts_dtb[tskno]}' and starttime = '{str(date_dtb[tskno])}'")
     mycon.commit()
     success.place(x = 630,y = 430)
 
@@ -141,7 +146,7 @@ def ref():
 
 def moveF(taskno):
     global sta,r_button,l_button,tsk,tsk_no,tot,ts_dtb
-    tsk.config(text = ts_dtb[taskno])
+    tsk.config(text = ts_dtb[taskno][:-1])
     if taskno == len(ts_dtb)-1:
         r_button = Button(main,text = '>>',font = ('Courier New',20),state = DISABLED)
 
@@ -157,7 +162,7 @@ def moveF(taskno):
 
 def moveB(taskno):
     global sta,r_button,l_button,tsk,tsk_no,tot,ts_dtb
-    tsk.config(text = ts_dtb[taskno])
+    tsk.config(text = ts_dtb[taskno][:-1])
 
     if taskno == 0:
         l_button = Button(main,text = '<<',font = ('Courier New',20),state = DISABLED)
@@ -201,8 +206,8 @@ upeff = Button(main,text = 'Upload Efficiency',font = ('Arial Black',20),command
 upeff.place(x = 100,y = 500)
 upgraph = Button(main,text = 'Efficiency Graph',font = ('Arial Black',20),command = graph)
 upgraph.place(x = 100,y = 680)
-uplink = Button(main,text = 'UPLOAD',font = ('Arial Black',20),command = upload)
-uplink.place(x = 100,y = 600)
+#uplink = Button(main,text = 'UPLOAD',font = ('Arial Black',20),state = DISABLED)
+#uplink.place(x = 100,y = 600)
 if not len(tim_dtb):
     End = Button(main,text = 'Finish',font = ('Arial Black',20),state = DISABLED)
     End.place(x = 730,y = 340)
@@ -268,7 +273,7 @@ c_task.place(x = 600,y = 140)
 Tasks = Label(main,text = 'Tasks',font = ('Arial Black', 30))
 Tasks.place(x = 725,y = 480)
 
-Fails_T = Label(main,text = 'Fails Today',font = ('Arial Black',30))
+Fails_T = Label(main,text = 'Failure Streak',font = ('Arial Black',30))
 Fails_T.place(x = 150,y = 25)
 
 Success_S = Label(main,text = 'Success Streak',font = ('Arial Black',30))
@@ -302,9 +307,10 @@ else:
     tsk_no = Label(task_frame,text = 'No tasks left to complete')
     tsk_no.pack()
 
+tdupload = 0
 #Clock
 def clock():
-    global cval,dval,tskno
+    global cval,dval,tskno,tdupload
     cval = time.strftime('%T')
     c.config(text = cval)
     if cval == '00:00:00':
@@ -317,8 +323,9 @@ def clock():
             timer(tim_dtb[tskno])
     except:
         pass
-    if tskno==len(tasks) and len(tasks):
+    if tskno==len(tasks) and len(tasks) and tdupload == 0:
         os.system('python instapost.py')
+        tdupload = 1
         ue()
     c.after(1000,clock)
         
@@ -334,8 +341,9 @@ def date():
 
 d = Label(main,text = '',font = ('Arial Black',20),bg = 'white',fg = 'black')
 d.place(x = 1400,y = 250)
+
+#Function calls
 date()
 clock()
 
-#Function calls
 main.mainloop()

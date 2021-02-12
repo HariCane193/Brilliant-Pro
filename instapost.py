@@ -15,9 +15,10 @@ w = open('usernameinfo.txt')
 user = w.readline()
 mycon = ms.connect(host = z[0],user = z[1],password = z[2],database = user)
 mycur = mycon.cursor()
-mycur.execute("Select count(status) from schedule where status = 'i'")
+dval1 = time.strftime('%Y')+'-'+time.strftime('%m')+'-'+time.strftime('%d')
+mycur.execute(f"Select count(status) from schedule where status = '1' and starttime>'{dval1+str(' 00:00:00')}'")
 (val,) = mycur.fetchone()
-mycur.execute("Select count(task) from schedule")
+mycur.execute(f"Select count(task) from schedule where starttime>'{dval1+str(' 00:00:00')}'")
 (tot,) = mycur.fetchone()
 w.close()
 
@@ -39,8 +40,6 @@ f.close()
 
 dval1 = time.strftime('%Y')+'-'+time.strftime('%m')+'-'+time.strftime('%d')
 bot.login(username = x[0],password = x[1])
-if (True):
-    bot.upload_photo(y,caption = f'Test on 23-11-2020')
-elif tot!=0 and val/tot<eff:
+if tot!=0 and (val/tot)<eff:
     bot.upload_photo(y,caption = f'Failure on {dval1}')
-os.rename(f'{y}',f'{y[:-10]}')
+    os.rename(f"{y+str('.REMOVE_ME')}",f"{y}")

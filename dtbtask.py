@@ -19,6 +19,8 @@ mycur = mycon.cursor()
 
 main = Tk()
 main.geometry('400x300')
+main.title('New Task')
+main.resizable(0,0)
 
 year = int(tt.strftime('%Y'))
 month = int(tt.strftime('%m'))

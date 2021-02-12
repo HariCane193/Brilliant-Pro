@@ -9,6 +9,7 @@ import mysql.connector as ms
 main = Tk()
 main.title('Brilliant Pro')
 main.geometry('1200x800')
+main.resizable(0,0)
 
 #database server connection
 f = open('databaseinfo.txt')

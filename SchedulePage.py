@@ -100,9 +100,12 @@ def clear():
 '''
     
 def mclear():
-    dval1 = time.strftime('%Y')+'-'+time.strftime('%m')+'-'+time.strftime('%d')
-    mycur.execute(f"delete from schedule where starttime >'{dval1+' 23:59:59'}'")
+    dval1 = time.strftime('%Y')+'-'+time.strftime('%m')+'-'+time.strftime('%d')+' '+time.strftime('%T')
+    mycur.execute(f"delete from schedule where starttime >'{dval1}'")
     mycon.commit()
+    mycur.execute(f"delete from schedule where starttime<'{dval1}' and status = '0'")
+    mycon.commit()
+    ref()
 #Alter function
 def alter():
     os.system('python dtbtask.py')
